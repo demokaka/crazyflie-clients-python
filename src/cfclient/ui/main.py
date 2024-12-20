@@ -599,16 +599,21 @@ class MainUI(QtWidgets.QMainWindow, main_window_class):
 
         Config().set("link_uri", str(self._connectivity_manager.get_interface()))
 
-        lg = LogConfig("Battery", 1000)
-        lg.add_variable("pm.vbat", "float")
-        lg.add_variable("pm.state", "int8_t")
-        try:
-            self.cf.log.add_config(lg)
-            lg.data_received_cb.add_callback(self.batteryUpdatedSignal.emit)
-            lg.error_cb.add_callback(self._log_error_signal.emit)
-            lg.start()
-        except KeyError as e:
-            logger.warning(str(e))
+        link_uri = Config().get("link_uri")
+        if link_uri.startswith("udp://"):
+            self.sitl_enabled = True
+        
+        if not self.sitl_enabled:
+            lg = LogConfig("Battery", 1000)
+            lg.add_variable("pm.vbat", "float")
+            lg.add_variable("pm.state", "int8_t")
+            try:
+                self.cf.log.add_config(lg)
+                lg.data_received_cb.add_callback(self.batteryUpdatedSignal.emit)
+                lg.error_cb.add_callback(self._log_error_signal.emit)
+                lg.start()
+            except KeyError as e:
+                logger.warning(str(e))
 
         mems = self.cf.mem.get_mems(MemoryElement.TYPE_DRIVER_LED)
         if len(mems) > 0:

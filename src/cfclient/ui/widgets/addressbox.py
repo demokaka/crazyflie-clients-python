@@ -30,10 +30,16 @@ This class provides a spin box with hexadecimal numbers and arbitrarily length
 (i.e. not limited by 32 bit).
 """
 
-from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QAbstractSpinBox
+# from PyQt5 import QtGui, QtCore
+# from PyQt5.QtCore import pyqtSignal
+# from PyQt5.QtWidgets import QLineEdit
+# from PyQt5.QtWidgets import QAbstractSpinBox
+
+from PyQt6.QtGui import QRegularExpressionValidator
+from PyQt6.QtCore import QRegularExpression
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QLineEdit
+from PyQt6.QtWidgets import QAbstractSpinBox
 
 __author__ = 'Bitcraze AB'
 __all__ = ['AddressBox']
@@ -49,8 +55,8 @@ class AddressBox(QLineEdit):
     def __init__(self, *args):
         QLineEdit.__init__(self, *args)
         self.address_type = self.HEX_ADDRESS_TYPE
-        self.regexp = QtCore.QRegExp('^0x[0-9A-Fa-f]{1,10}$')
-        self.validator = QtGui.QRegExpValidator(self.regexp)
+        self.regexp = QRegularExpression('^0x[0-9A-Fa-f]{1,10}$')
+        self.validator = QRegularExpressionValidator(self.regexp)
         self.setValidator(self.validator)
 
     def validate(self, text, pos):
@@ -61,11 +67,11 @@ class AddressBox(QLineEdit):
             self.address_type = address_type
             match address_type:
                 case self.HEX_ADDRESS_TYPE:
-                    self.regexp = QtCore.QRegExp('^0x[0-9A-Fa-f]{1,10}$')
+                    self.regexp = QRegularExpression('^0x[0-9A-Fa-f]{1,10}$')
                 case self.IP_ADDRESS_TYPE:
-                    self.regexp = QtCore.QRegExp('^(([0-1]?[0-9]?[0-9]?|2[0-4][0-9]|25[0-5])\\.){3}([0-1]?[0-9]?[0-9]?|2[0-4][0-9]|25[0-5]){1}$')
+                    self.regexp = QRegularExpression('^(([0-1]?[0-9]?[0-9]?|2[0-4][0-9]|25[0-5])\\.){3}([0-1]?[0-9]?[0-9]?|2[0-4][0-9]|25[0-5]){1}$')
 
-            self.validator = QtGui.QRegExpValidator(self.regexp)
+            self.validator = QRegularExpressionValidator(self.regexp)
             self.setValidator(self.validator)
     # def validate(self, text, pos):
     #     if self.address_type == self.HEX_ADDRESS_TYPE:

@@ -32,7 +32,10 @@ read/write the configuration block in the Crazyflie flash.
 from __future__ import annotations
 
 from cflib.bootloader import Bootloader
-from cfclient.ui.connectivity_manager import ConnectivityManager
+
+### this line is commented to replace it with sitl function
+# from cfclient.ui.connectivity_manager import ConnectivityManager
+from cfclient.ui.dialogs.bootloader_connectivity_manager import BootloaderConnectivityManager
 
 import tempfile
 import logging
@@ -98,14 +101,24 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
         self.coldBootButton.clicked.connect(self.initiateColdboot)
         self.resetButton.clicked.connect(self.resetCopter)
 
-        self._helper.connectivity_manager.register_ui_elements(
-            ConnectivityManager.UiElementsContainer(
+        ### These lines are commented for sitl implementation
+        # self._helper.connectivity_manager.register_ui_elements(
+        #     ConnectivityManager.UiElementsContainer(
+        #         interface_combo=self.comboBox,
+        #         address_spinner=self.address,
+        #         connect_button=self.connectButton,
+        #         scan_button=self.scanButton))
+        # self._helper.connectivity_manager.connection_state_changed.connect(self._fw_connection_state_changed)
+        # self.bootloader_connectivity_manager = BootloaderConnectivityManager()
+        
+        self.bootloader_connectivity_manager.register_ui_elements(
+            BootloaderConnectivityManager.UiElementsContainer(
                 interface_combo=self.comboBox,
                 address_spinner=self.address,
                 connect_button=self.connectButton,
                 scan_button=self.scanButton))
-        self._helper.connectivity_manager.connection_state_changed.connect(self._fw_connection_state_changed)
-
+        self.bootloader_connectivity_manager.connection_state_changed.connect(self._fw_connection_state_changed)
+        
         # connecting other signals
         self.clt.programmed.connect(self.programDone)
         self.clt.statusChanged.connect(self.statusUpdate)
@@ -151,7 +164,10 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
             self.progressBar.setValue(0)
             self.statusLabel.setText('Status: <b>IDLE</b>')
             self.setSourceSelectionUiEnabled(True)
-            self._helper.connectivity_manager.set_enable(True)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(True)
+            self.bootloader_connectivity_manager.set_enable(True)
+
         elif (state == self.UIState.COLD_CONNECTING):
             self._cold_boot_error_message = None
             self.resetButton.setEnabled(False)
@@ -159,7 +175,9 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
             self.setStatusLabel("Trying to connect cold bootloader, restart the Crazyflie to connect")
             self.coldBootButton.setEnabled(False)
             self.setSourceSelectionUiEnabled(True)
-            self._helper.connectivity_manager.set_enable(False)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(False)
+            self.bootloader_connectivity_manager.set_enable(False)
         elif (state == self.UIState.COLD_CONNECTED):
             self._cold_boot_error_message = None
             self.resetButton.setEnabled(True)
@@ -169,7 +187,9 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
             self.imagePathBrowseButton.setEnabled(True)
             self.imagePathLine.setEnabled(True)
             self.firmwareDropdown.setEnabled(True)
-            self._helper.connectivity_manager.set_enable(False)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(False)
+            self.bootloader_connectivity_manager.set_enable(False)
         elif (state == self.UIState.FW_CONNECTING):
             self._cold_boot_error_message = None
             self.resetButton.setEnabled(False)
@@ -177,12 +197,16 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
             self.setStatusLabel("Trying to connect in firmware mode")
             self.coldBootButton.setEnabled(False)
             self.setSourceSelectionUiEnabled(True)
-            self._helper.connectivity_manager.set_enable(True)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(True)
+            self.bootloader_connectivity_manager.set_enable(True)
         elif (state == self.UIState.FW_CONNECTED):
             self._cold_boot_error_message = None
             self.resetButton.setEnabled(False)
             self.coldBootButton.setEnabled(False)
-            self._helper.connectivity_manager.set_enable(True)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(True)
+            self.bootloader_connectivity_manager.set_enable(True)
 
             if self._helper.cf.link_uri.startswith("usb://"):
                 self.programButton.setEnabled(False)
@@ -199,7 +223,9 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
             self.setStatusLabel("Scanning")
             self.coldBootButton.setEnabled(False)
             self.setSourceSelectionUiEnabled(True)
-            self._helper.connectivity_manager.set_enable(True)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(True)
+            self.bootloader_connectivity_manager.set_enable(True)
         elif (state == self.UIState.FLASHING):
             self.resetButton.setEnabled(False)
             self.resetButton.setEnabled(False)
@@ -207,7 +233,9 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
             self.setStatusLabel("Flashing")
             self.coldBootButton.setEnabled(False)
             self.setSourceSelectionUiEnabled(False)
-            self._helper.connectivity_manager.set_enable(False)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(False)
+            self.bootloader_connectivity_manager.set_enable(False)
         elif (state == self.UIState.RESET):
             self._cold_boot_error_message = None
             self.setStatusLabel("Resetting to firmware, disconnected")
@@ -215,7 +243,9 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
             self.programButton.setEnabled(False)
             self.coldBootButton.setEnabled(False)
             self.setSourceSelectionUiEnabled(True)
-            self._helper.connectivity_manager.set_enable(False)
+            ### this line is commented for sitl implementation
+            # self._helper.connectivity_manager.set_enable(False)
+            self.bootloader_connectivity_manager.set_enable(False)
 
     def setSourceSelectionUiEnabled(self, enabled):
         self.imagePathBrowseButton.setEnabled(enabled)

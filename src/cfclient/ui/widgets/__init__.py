@@ -30,4 +30,7 @@ Custom widgets used by the user interface.
 """
 
 # This is required to show an hidden import to py2exe
-from .hexspinbox import HexSpinBox as _HexSpinBox  # noqa
+### this line is commented for sitl
+# from .hexspinbox import HexSpinBox as _HexSpinBox  # noqa
+
+from .addressbox import AddressBox as _AddressBox # noqa

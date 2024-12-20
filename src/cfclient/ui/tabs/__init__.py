@@ -48,13 +48,16 @@ __author__ = 'Bitcraze AB'
 __all__ = []
 
 available = [
-    ConsoleTab,
+    ### this line is commented for sitl
+    # ConsoleTab,
     # ExampleTab,
     FlightTab,
     # GpsTab,
-    LEDTab,
+    ### this line is commented for sitl
+    # LEDTab,
     LogBlockTab,
     LogTab,
+    ### these lines are commented for sitl
     ParamTab,
     PlotTab,
     LocoPositioningTab,

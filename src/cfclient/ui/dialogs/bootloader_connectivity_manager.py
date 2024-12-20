@@ -7,7 +7,7 @@
 #  +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
 #   ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
 #
-#  Copyright (C) 2021-2023 Bitcraze AB
+#  Copyright (C) 2021 Bitcraze AB
 #
 #  Crazyflie Nano Quadcopter Client
 #
@@ -26,19 +26,18 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #  02110-1301, USA.
 from collections import namedtuple
-from PyQt6.QtCore import pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal, QObject
 
 __author__ = 'Bitcraze AB'
-__all__ = ['ConnectivityManager']
+__all__ = ['BootloaderConnectivityManager']
 
 
-class ConnectivityManager(QObject):
+class BootloaderConnectivityManager(QObject):
     UiElementsContainer = namedtuple('UiElementContainer', [
         'interface_combo',
         'address_spinner',
         'connect_button',
-        'scan_button',
-        'sitl_check_box'])
+        'scan_button'])
 
     class UIState:
         DISCONNECTED = 0
@@ -51,7 +50,6 @@ class ConnectivityManager(QObject):
     connect_button_clicked = pyqtSignal()
     scan_button_clicked = pyqtSignal(object)
     connection_state_changed = pyqtSignal(object)
-    sitl_check_box_changed = pyqtSignal(object)
 
     def __init__(self):
         QObject.__init__(self)
@@ -65,13 +63,11 @@ class ConnectivityManager(QObject):
         ui_elements.connect_button.clicked.connect(self._connect_button_click_handler)
         ui_elements.scan_button.clicked.connect(self._scan_button_click_handler)
 
-        # ui_elements.address_spinner.valueChanged.connect(self._address_changed_handler)
-        ui_elements.address_spinner.textChanged.connect(self._address_changed_handler)
+        ui_elements.address_spinner.valueChanged.connect(self._address_changed_handler)
         ui_elements.address_spinner.editingFinished.connect(self._address_edited_handler)
 
-        ui_elements.interface_combo.currentIndexChanged.connect(self._interface_combo_current_index_changed_handler)
-
-        ui_elements.sitl_check_box.stateChanged.connect(self._sitl_checkbox_changed_handler)
+        ui_elements.interface_combo.currentIndexChanged['QString'].connect(
+            self._interface_combo_current_index_changed_handler)
 
     def set_state(self, state):
         if self._state != state:
@@ -94,12 +90,10 @@ class ConnectivityManager(QObject):
 
     def set_address(self, address):
         for ui_elements in self._ui_elements:
-            # ui_elements.address_spinner.setValue(address)
             ui_elements.address_spinner.setText(address)
 
     def get_address(self):
         if len(self._ui_elements) > 0:
-            # return self._ui_elements[0].address_spinner.value()
             return self._ui_elements[0].address_spinner.text()
         else:
             return 0
@@ -135,44 +129,32 @@ class ConnectivityManager(QObject):
 
     def _address_changed_handler(self, value):
         for ui_elements in self._ui_elements:
-            # if value != ui_elements.address_spinner.value():
-            #     ui_elements.address_spinner.setValue(value)
             if value != ui_elements.address_spinner.text():
                 ui_elements.address_spinner.setText(value)
 
     def _address_edited_handler(self):
         # Find out if one of the addresses has changed and what the new value is
         value = 0
-        ### the following is commented for sitl implementation
-        # is_changed = False
-        # for ui_elements in self._ui_elements:
-        #     if ui_elements.address_spinner.is_text_different_from_value():
-        #         value = ui_elements.address_spinner.value()
-        #         is_changed = True
-        #         break
+        is_changed = False
+        for ui_elements in self._ui_elements:
+            if ui_elements.address_spinner.is_text_different_from_value():
+                value = ui_elements.address_spinner.text()
+                is_changed = True
+                break
 
-        # # Set the new value
-        # if is_changed:
-        #     for ui_elements in self._ui_elements:
-        #         if value != ui_elements.address_spinner.value():
-        #             ui_elements.address_spinner.setValue(value)
+        # Set the new value
+        if is_changed:
+            for ui_elements in self._ui_elements:
+                if value != ui_elements.address_spinner.text():
+                    ui_elements.address_spinner.setText(value)
 
     def _interface_combo_current_index_changed_handler(self, interface):
-        interface_s = str(interface)
         can_connect = interface != self.INTERFACE_PROMPT_TEXT
         for ui_elements in self._ui_elements:
             combo = ui_elements.interface_combo
-            if combo.currentText != interface_s:
-                combo.setCurrentText(interface_s)
+            if combo.currentText != interface:
+                combo.setCurrentText(interface)
             ui_elements.connect_button.setEnabled(can_connect)
-    
-    def _sitl_checkbox_changed_handler(self, state):
-        for ui_elements in self._ui_elements:
-            if state == 0:
-                ui_elements.address_spinner.change_type(ui_elements.address_spinner.HEX_ADDRESS_TYPE)
-            elif state == 2:
-                ui_elements.address_spinner.change_type(ui_elements.address_spinner.IP_ADDRESS_TYPE)
-            self.sitl_check_box_changed.emit(state)
 
     def _update_ui(self):
         if self._is_enabled:

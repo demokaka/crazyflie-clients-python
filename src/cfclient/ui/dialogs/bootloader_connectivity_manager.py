@@ -26,7 +26,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #  02110-1301, USA.
 from collections import namedtuple
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt6.QtCore import pyqtSignal, QObject
 
 __author__ = 'Bitcraze AB'
 __all__ = ['BootloaderConnectivityManager']

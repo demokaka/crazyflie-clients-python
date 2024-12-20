@@ -65,8 +65,8 @@ from PyQt6.QtWidgets import QLabel
 from PyQt6.QtWidgets import QMenu
 from PyQt6.QtWidgets import QMessageBox
 
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QCheckBox
+# from PyQt5.QtWidgets import QLineEdit
+# from PyQt5.QtWidgets import QCheckBox
 
 from .dialogs.cf2config import Cf2ConfigDialog
 from .dialogs.inputconfigdialogue import InputConfigDialogue

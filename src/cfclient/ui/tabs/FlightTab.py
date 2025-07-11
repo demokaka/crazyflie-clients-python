@@ -263,6 +263,7 @@ class FlightTab(TabToolbox, flight_tab_class):
         if action == CommanderAction.TAKE_OFF:
             ### this line is commented for sitl implementation
             # self._helper.cf.param.set_value('commander.enHighLevel', '1')
+            self._helper.cf.param.set_value('commander.enHighLevel', '1')
 
             z_target = current_z + move_dist
             self._helper.cf.high_level_commander.takeoff(z_target, move_dist / move_vel)
@@ -296,6 +297,8 @@ class FlightTab(TabToolbox, flight_tab_class):
             ### these lines are commented for sitl implementation
             # self.estimateThrust.setText(
             #     "%.2f%%" % self.thrustToPercentage(data[self.LOG_NAME_THRUST]))
+            self.estimateThrust.setText(
+                "%.2f%%" % self.thrustToPercentage(data[self.LOG_NAME_THRUST]))
 
             if data[self.LOG_NAME_CAN_FLY] != self._can_fly_deprecated:
                 self._can_fly_deprecated = data[self.LOG_NAME_CAN_FLY]
@@ -444,19 +447,21 @@ class FlightTab(TabToolbox, flight_tab_class):
 
             return
 
-        #                  flowV1    flowV2     LightHouse       LPS
-        position_decks = ['bcFlow', 'bcFlow2', 'bcLighthouse4', 'bcLoco', 'bcDWM1000']
-        for deck in position_decks:
-            if int(self._helper.cf.param.values['deck'][deck]) == 1:
-                self.commanderBox.setEnabled(True)
-                break
-        else:
-            self.commanderBox.setToolTip('You need a positioning deck to use Command Based Flight')
-            ### this line is commented for sitl implementation
-            # self.commanderBox.setEnabled(False)
-            # self.commanderBox.setEnabled(True)
+        ### these lines are commented for sitl implementation
+        # #                  flowV1    flowV2     LightHouse       LPS
+        # position_decks = ['bcFlow', 'bcFlow2', 'bcLighthouse4', 'bcLoco', 'bcDWM1000']
+        # for deck in position_decks:
+        #     if int(self._helper.cf.param.values['deck'][deck]) == 1:
+        #         self.commanderBox.setEnabled(True)
+        #         break
+        # else:
+        #     self.commanderBox.setToolTip('You need a positioning deck to use Command Based Flight')
+        #     ### this line is commented for sitl implementation
+        #     # self.commanderBox.setEnabled(False)
+        #     # self.commanderBox.setEnabled(True)
 
-            return
+        #     return
+        self.commanderBox.setEnabled(True)  # added for sitl implementation 
 
         # To prevent conflicting commands from the controller and the flight panel
         if JoystickReader().available_devices():
@@ -790,9 +795,10 @@ class FlightTab(TabToolbox, flight_tab_class):
             self._ring_effect_changed)
 
         self._led_ring_effect.setCurrentIndex(current)
-        if int(self._helper.cf.param.values["deck"]["bcLedRing"]) == 1:
-            self._led_ring_effect.setEnabled(True)
-            self._led_ring_headlight.setEnabled(True)
+        ### these lines are commented for sitl implementation
+        # if int(self._helper.cf.param.values["deck"]["bcLedRing"]) == 1:
+        #     self._led_ring_effect.setEnabled(True)
+        #     self._led_ring_headlight.setEnabled(True)
 
     def _ring_effect_changed(self, index):
         self._ring_effect = index
@@ -821,23 +827,27 @@ class FlightTab(TabToolbox, flight_tab_class):
         heightHoldPossible = False
         hoverPossible = False
 
-        if int(self._helper.cf.param.values["deck"]["bcZRanger"]) == 1:
-            heightHoldPossible = True
-            self._helper.inputDeviceReader.set_hover_max_height(1.0)
+        ### these lines are commented for sitl implementation
+        # if int(self._helper.cf.param.values["deck"]["bcZRanger"]) == 1:
+        #     heightHoldPossible = True
+        #     self._helper.inputDeviceReader.set_hover_max_height(1.0)
 
-        if int(self._helper.cf.param.values["deck"]["bcZRanger2"]) == 1:
-            heightHoldPossible = True
-            self._helper.inputDeviceReader.set_hover_max_height(2.0)
+        ### these lines are commented for sitl implementation
+        # if int(self._helper.cf.param.values["deck"]["bcZRanger2"]) == 1:
+        #     heightHoldPossible = True
+        #     self._helper.inputDeviceReader.set_hover_max_height(2.0)
 
-        if int(self._helper.cf.param.values["deck"]["bcFlow"]) == 1:
-            heightHoldPossible = True
-            hoverPossible = True
-            self._helper.inputDeviceReader.set_hover_max_height(1.0)
+        ### these lines are commented for sitl implementation
+        # if int(self._helper.cf.param.values["deck"]["bcFlow"]) == 1:
+        #     heightHoldPossible = True
+        #     hoverPossible = True
+        #     self._helper.inputDeviceReader.set_hover_max_height(1.0)
 
-        if int(self._helper.cf.param.values["deck"]["bcFlow2"]) == 1:
-            heightHoldPossible = True
-            hoverPossible = True
-            self._helper.inputDeviceReader.set_hover_max_height(2.0)
+        ### these lines are commented for sitl implementation
+        # if int(self._helper.cf.param.values["deck"]["bcFlow2"]) == 1:
+        #     heightHoldPossible = True
+        #     hoverPossible = True
+        #     self._helper.inputDeviceReader.set_hover_max_height(2.0)
 
         if not heightHoldPossible:
             self._assist_mode_combo.model().item(2).setEnabled(False)

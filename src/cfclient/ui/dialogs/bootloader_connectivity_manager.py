@@ -66,7 +66,9 @@ class BootloaderConnectivityManager(QObject):
         ui_elements.address_spinner.valueChanged.connect(self._address_changed_handler)
         ui_elements.address_spinner.editingFinished.connect(self._address_edited_handler)
 
-        ui_elements.interface_combo.currentIndexChanged['QString'].connect(
+        # ui_elements.interface_combo.currentIndexChanged['QString'].connect(
+        #     self._interface_combo_current_index_changed_handler)
+        ui_elements.interface_combo.currentTextChanged.connect(
             self._interface_combo_current_index_changed_handler)
 
     def set_state(self, state):

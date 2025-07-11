@@ -31,3 +31,7 @@ docs/.jekyll-metadata
 
 # Python venv
 venv/
+
+
+# Notes
+notes.md

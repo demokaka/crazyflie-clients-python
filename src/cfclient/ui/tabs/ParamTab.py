@@ -311,7 +311,9 @@ class ParamTab(TabToolbox, param_tab_class):
 
         @QtCore.pyqtSlot(str)
         def onFilterChanged(text):
-            self.proxyModel.setFilterRegExp(text)
+            ### this line is commented for sitl implementation
+            # self.proxyModel.setFilterRegExp(text)
+            self.proxyModel.setFilterRegularExpression(text)
 
         self.filterBox.textChanged.connect(onFilterChanged)
 

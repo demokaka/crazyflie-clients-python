@@ -109,7 +109,7 @@ class BootloaderDialog(QtWidgets.QWidget, service_dialog_class):
         #         connect_button=self.connectButton,
         #         scan_button=self.scanButton))
         # self._helper.connectivity_manager.connection_state_changed.connect(self._fw_connection_state_changed)
-        # self.bootloader_connectivity_manager = BootloaderConnectivityManager()
+        self.bootloader_connectivity_manager = BootloaderConnectivityManager()
         
         self.bootloader_connectivity_manager.register_ui_elements(
             BootloaderConnectivityManager.UiElementsContainer(

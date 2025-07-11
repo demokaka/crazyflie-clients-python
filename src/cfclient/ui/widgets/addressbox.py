@@ -52,8 +52,10 @@ class AddressBox(QLineEdit):
     IP_ADDRESS_TYPE = 1
     address_types = [HEX_ADDRESS_TYPE, IP_ADDRESS_TYPE]
 
-    def __init__(self, *args):
-        QLineEdit.__init__(self, *args)
+    # def __init__(self, *args):
+    #     QLineEdit.__init__(self, *args)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.address_type = self.HEX_ADDRESS_TYPE
         self.regexp = QRegularExpression('^0x[0-9A-Fa-f]{1,10}$')
         self.validator = QRegularExpressionValidator(self.regexp)
